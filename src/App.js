@@ -129,8 +129,9 @@ export const App = () => {
           {yScale2.ticks().map(tickValue => (
             <g transform={`translate(${innerWidth}, ${innerHeight - yScale2(tickValue)})`}> 
               <text
-                style={{ textAnchor: 'end' }}
-                dy=".32em"
+                style={{ textAnchor: 'start' }}
+                dy=".4em"
+                dx="0.5em"
                 x={-2}
               >
                 {tickValue}
@@ -154,6 +155,7 @@ export const App = () => {
             <path
               fill="none"
               stroke="black"
+              strokeWidth={2}
               d={line()
                 .curve(curveBasis)
                 .x(d => xScale(xValue(d)))
