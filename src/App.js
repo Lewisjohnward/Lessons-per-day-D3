@@ -8,15 +8,19 @@ import {
   extent,
   timeFormat,
   format,
+  line,
+  curveNatural,
+  curveBasis
 } from "d3";
 import randomColor from "randomcolor"
+import { Magnify } from "./Magnify"
 
 import { csvUrl } from "./csvUrl"
 
 import "./style.css";
 
 
-const width = window.innerWidth ;
+const width = window.innerWidth - 30 ;
 const height = window.innerHeight / 2;
 
 const margin = {
@@ -26,8 +30,12 @@ const margin = {
   left: 40,
 };
 
+
+
 export const App = () => {
   const [data, setData] = useState(null);
+
+  
 
   useEffect(() => {
     const row = (d) => {
@@ -39,6 +47,7 @@ export const App = () => {
     csv(csvUrl, row).then(setData);
   }, []);
 
+ 
   if (!data) {
     return <pre>Loading...</pre>;
   }
@@ -49,7 +58,8 @@ export const App = () => {
     return c-d;
   });
 
-  console.log(data[0]);
+  const lessonCount = data.length
+  console.log(data);
 
   const tickFormat = timeFormat("%Y");
 
@@ -70,16 +80,23 @@ export const App = () => {
     .range([0, innerHeight])
     .nice()
 
-  const tickOffset = 0;
 
-  console.log(yScale.ticks());
-  //console.log(yScale.bandwidth())
-  //console.log(xScale(data[0].date))
+    
+  const yValue2 = d => d.id
+  const yScale2 = scaleLinear()
+    .domain(extent(data, yValue2))
+    .range([0, innerHeight])
+    .nice()
+
+    console.log(yScale2.ticks())
+  const tickOffset = 0;
+  
   return (
     <>
-      <svg width={width} height={height}>
+      <svg width={width} height={height} >
         <g transform={`translate(${margin.left}, ${margin.top})`}>
 
+          {/*Follow line*/}
 
           {/*X axis*/}
           {xScale.ticks().map(tickValue => (
@@ -95,7 +112,7 @@ export const App = () => {
 
 
 
-          {/*Y axis*/}
+          {/*Y axis 1*/}
           {yScale.ticks().map(tickValue => (
             <g transform={`translate(0, ${innerHeight - yScale(tickValue)})`}> 
               <text
@@ -108,13 +125,48 @@ export const App = () => {
             </g>
           ))}
 
+          {/*Y axis 2*/}
+          {yScale2.ticks().map(tickValue => (
+            <g transform={`translate(${innerWidth}, ${innerHeight - yScale2(tickValue)})`}> 
+              <text
+                style={{ textAnchor: 'end' }}
+                dy=".32em"
+                x={-2}
+              >
+                {tickValue}
+              </text>
+            </g>
+          ))}
+
 
           
           {/*marks*/}
           {drawMarks(data, xScale, innerHeight, yScale)}
 
+          {/*Line marks*/}
+          {<g>
+            <text
+              x={xScale(xValue(data[data.length - 1]))}
+              y={yScale2(yValue2(data[data.length - 1])) - 5}
+            >
+              {data.length}
+            </text>
+            <path
+              fill="none"
+              stroke="black"
+              d={line()
+                .curve(curveBasis)
+                .x(d => xScale(xValue(d)))
+                .y(d=> yScale2(yValue2(d)))(data)
+              }
+              />
+          </g>
+          }
+
+
           </g>
       </svg>
+      <div onDrag={() => console.log("hello")} onDragStart={() => console.log("hello")} onDragEnd={() => console.log("goodbye")}>fds</div>
     </>
   );
 };
@@ -131,7 +183,6 @@ const drawMarks = (data, xScale, innerHeight, yScale) => {
     const rectangleY = innerHeight - yScale(d.length)
 
     if (currentDate == previousDate){
-      console.log("Yes they match")
       yCoords -= yScale(d.length)
 
       return (
