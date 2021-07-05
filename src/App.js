@@ -1,40 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { Graphic } from "./graphic/Graphic"
 import { GetData } from "./getData"
-import { csvUrl } from "./getData"
 
 import {Totals} from "./totals/Totals"
 
 import "./style.css";
 
-
-
-
-
-
 export const App = () => {
   const data = GetData()
-  const [modifiedData, setModifiedData] = useState()
-  const [year, setYear] = useState('')
-  const [view, setView] = useState('')
- 
+
   if (!data) {
     return <pre>Loading...</pre>;
   }
-  console.log(data)
 
-  data.sort(function(a, b) {
-    var c = new Date(a.date);
-    var d = new Date(b.date);
-    return c-d;
+
+  data.sort((a, b) => {
+    const c = new Date(a.date)
+    const d = new Date(b.date)
+    return c-d
   });
 
-  
+  console.log(data[0])
+  data && console.log(data)
 
   return (
     <>
-      <Graphic data={!modifiedData ? data: modifiedData} setModifiedData={setModifiedData} view={view} year={year} setYear={setYear} setView={setView}/>
+      <Graphic data={data}/>
       <Totals data={data}/>
     </>
 

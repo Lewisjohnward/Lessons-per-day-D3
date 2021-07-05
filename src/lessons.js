@@ -5,6 +5,54 @@ const lessonCleaner = () => {
 [
     {
       "id": 0,
+      "day": "05",
+      "month": "lug",
+      "length": "30 min"
+    },
+    {
+      "id": 1,
+      "day": "03",
+      "month": "lug",
+      "length": "30 min"
+    },
+    {
+      "id": 2,
+      "day": "02",
+      "month": "lug",
+      "length": "60 min"
+    },
+    {
+      "id": 3,
+      "day": "01",
+      "month": "giu",
+      "length": "30 min"
+    },
+    {
+      "id": 4,
+      "day": "30",
+      "month": "giu",
+      "length": "30 min"
+    },
+    {
+      "id": 5,
+      "day": "29",
+      "month": "giu",
+      "length": "30 min"
+    },
+    {
+      "id": 6,
+      "day": "28",
+      "month": "giu",
+      "length": "30 min"
+    },
+    {
+      "id": 7,
+      "day": "26",
+      "month": "giu",
+      "length": "30 min"
+    },
+    {
+      "id": 0,
       "day": "25",
       "month": "giu",
       "length": "30 min"
@@ -2714,7 +2762,7 @@ const lessonCleaner = () => {
   let updatedLessons = []
 
   let year = 2021
-  let previousLesson = 5
+  let previousLesson = 11
 
   const whatMonth = month => {
     let monthAsNumber  
@@ -2767,22 +2815,23 @@ const lessonCleaner = () => {
     return parseInt(length)
   }
 
-  lessons.map(item => {
+
+  lessons.map((item, i) => {
     const month = whatMonth(item.month)
     const currentLesson = month
     const day = whatDay(item.day)
     const length = calculateLength(item.length)
 
-    if (currentLesson < previousLesson){
+    if (currentLesson > previousLesson){
       year -= 1
     }
 
     const updated = {
-      id: item.id,
+      id: i,
       length: length,
       date: new Date(year, month, day)
     }
-
+    console.log(updated)
     updatedLessons.push(updated)
     previousLesson = month
   })

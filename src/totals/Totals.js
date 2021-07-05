@@ -69,7 +69,7 @@ export const Totals = ({ data }) => {
           <div style={{ display: "flex" }}>
             <div>
               <p>
-                {year} - {quantity} lessons- {average} a week average - {time} hours
+                {year} - {quantity} lessons- {average} a week average - Total time: {time} hours
               </p>
             </div>
           </div>
